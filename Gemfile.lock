@@ -3,6 +3,7 @@ PATH
   specs:
     utterson (0.1.0)
       nokogiri
+      trollop
 
 GEM
   remote: https://rubygems.org/
@@ -27,6 +28,7 @@ GEM
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
+    trollop (2.0)
     webmock (1.15.2)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)

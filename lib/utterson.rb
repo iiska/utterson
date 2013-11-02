@@ -7,6 +7,7 @@ class Utterson
 
   def initialize(opts={})
     @dir = opts[:dir] || './'
+    @root = opts[:root] || @dir
     @errors = {}
     @stats = {errors: 0, files: 0, urls: 0}
   end
@@ -54,7 +55,7 @@ class Utterson
 
   def check_local_uri(url, file)
     if url =~ /^\//
-      path = File.expand_path(".#{url}", @dir)
+      path = File.expand_path(".#{url}", @root)
     else
       path = File.expand_path(url, File.dirname(file))
     end

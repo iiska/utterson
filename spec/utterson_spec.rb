@@ -73,7 +73,13 @@ describe Utterson do
       u.errors["spec/fixtures/dir-structure/1.htm"].should == {"../sample_not_found.html" => "File not found"}
     end
 
-    it "should handle target directory as root for urls starting with /" do
+    it "should use root directory when urls start with /" do
+      u2 = Utterson.new(dir: "spec/fixtures/dir-structure", root: "spec/fixtures")
+      u2.check_local_uri("/sample.html", "spec/fixtures/dir-structure/1.htm")
+      u2.errors.should be_empty
+    end
+
+    it "should handle target directory as root for urls starting with / if root is no available" do
       u.check_local_uri("/2.html", "spec/fixtures/dir-structure/1.htm")
       u.errors.should be_empty
     end

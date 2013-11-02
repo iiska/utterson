@@ -2,6 +2,11 @@
 
 $:.unshift File.join(File.dirname(__FILE__), *%w{ .. lib })
 
+require 'trollop'
 require 'utterson'
 
-Utterson.new(:dir => ARGV[0]).check
+opts = Trollop::options do
+  opt :root, "Root directory for the site if it differs from target dir"
+end
+
+Utterson.new(opts.merge(dir: ARGV[0])).check
