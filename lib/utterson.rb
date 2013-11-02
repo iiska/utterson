@@ -48,7 +48,8 @@ class Utterson
 
   def check_remote_uri(url, file)
     uri = URI(url.gsub(/^\/\//, 'http://'))
-    Net::HTTP.start(uri.host, uri.port) do |http|
+    Net::HTTP.start(uri.host, uri.port,
+                    :use_ssl => uri.scheme == 'https') do |http|
       p = uri.path.empty? ? "/" : uri.path
       response = http.head(p)
       if response.code =~ /^[^23]/
