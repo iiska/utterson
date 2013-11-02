@@ -9,6 +9,7 @@ class Utterson
     @dir = opts[:dir] || './'
     @root = opts[:root] || @dir
     @errors = {}
+    @checked_urls = {}
     @stats = {errors: 0, files: 0, urls: 0}
   end
 
@@ -35,20 +36,23 @@ class Utterson
   end
 
   def check_uri(url, file)
+    return if @checked_urls[url]
+
     if url =~ /^(https?:)?\/\//
       check_remote_uri url, file
     else
       check_local_uri url, file
     end
+    @checked_urls[url] = true
   end
 
   def check_remote_uri(url, file)
-    uri = URI(url)
+    uri = URI(url.gsub(/^\/\//, 'http://'))
     Net::HTTP.start(uri.host, uri.port) do |http|
       p = uri.path.empty? ? "/" : uri.path
       response = http.head(p)
       if response.code =~ /^[^23]/
-        add_error(file, url, response)
+        add_error(file, uri.to_s, response)
       end
     end
   end
