@@ -54,6 +54,7 @@ class Utterson
   end
 
   def check_local_uri(url, file)
+    url.gsub!(/\?.*$/, '')
     if url =~ /^\//
       path = File.expand_path(".#{url}", @root)
     else

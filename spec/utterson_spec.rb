@@ -83,6 +83,11 @@ describe Utterson do
       u.check_local_uri("/2.html", "spec/fixtures/dir-structure/1.htm")
       u.errors.should be_empty
     end
+
+    it "should ignore query string when checking local files" do
+      u.check_local_uri("2.html?queryparam=value", "spec/fixtures/dir-structure/1.htm")
+      u.errors.should be_empty
+    end
   end
 
   describe "#check_remote_uri" do
