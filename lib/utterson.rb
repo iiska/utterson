@@ -53,7 +53,11 @@ class Utterson
   end
 
   def check_local_uri(url, file)
-    path = File.expand_path(url, File.dirname(file))
+    if url =~ /^\//
+      path = File.expand_path(".#{url}", @dir)
+    else
+      path = File.expand_path(url, File.dirname(file))
+    end
     add_error(file, url, "File not found") unless File.exists? path
   end
 

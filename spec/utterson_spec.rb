@@ -61,7 +61,7 @@ describe Utterson do
   end
 
   describe "#check_local_uri" do
-    let(:u) {Utterson.new}
+    let(:u) {Utterson.new(dir: "spec/fixtures/dir-structure")}
 
     it "should not assign error info if file exists" do
       u.check_local_uri("../sample.html", "spec/fixtures/dir-structure/1.htm")
@@ -71,6 +71,11 @@ describe Utterson do
     it "should assign error info if file doesn't exist" do
       u.check_local_uri("../sample_not_found.html", "spec/fixtures/dir-structure/1.htm")
       u.errors["spec/fixtures/dir-structure/1.htm"].should == {"../sample_not_found.html" => "File not found"}
+    end
+
+    it "should handle target directory as root for urls starting with /" do
+      u.check_local_uri("/2.html", "spec/fixtures/dir-structure/1.htm")
+      u.errors.should be_empty
     end
   end
 
