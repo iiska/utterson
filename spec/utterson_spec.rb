@@ -78,15 +78,21 @@ describe Utterson do
     let(:u) {Utterson.new}
 
     it "should not assign error info if request is successfull" do
+      stub_request(:head, "http://example.com/index.html").
+        with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => "", :headers => {})
       u.check_remote_uri("http://example.com/index.html", "test.html")
       u.errors.should be_empty
     end
 
     it "should assign error info if there is error response" do
-      u.check_remote_uri("http://example.com/file_which_wont_exist.html", "test.html")
+      stub_request(:head, "http://example.com/404.html").
+        with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 404, :body => "", :headers => {})
+      u.check_remote_uri("http://example.com/404.html", "test.html")
       puts u.errors.inspect
       u.errors["test.html"].should_not be_empty
-      u.errors["test.html"]["http://example.com/file_which_wont_exist.html"].instance_of?(Net::HTTPNotFound).should be_true
+      u.errors["test.html"]["http://example.com/404.html"].instance_of?(Net::HTTPNotFound).should be_true
     end
   end
 
@@ -96,15 +102,22 @@ describe Utterson do
       output = capture_stdout do
         u.check
       end
-      output.should == "4 files with 0 urls checked.\n"
+      output.should match(/4 files with 0 urls checked/)
     end
 
     it "should output error information" do
+      stub_request(:head, "http://example.com/").
+        with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 404, :body => "", :headers => {})
       u = Utterson.new(dir: "spec/fixtures")
       output = capture_stdout do
         u.check
       end
-      output.should == "spec/fixtures/sample.html\n\tstyle.css\n\t\tFile not found\n\tscript.js\n\t\tFile not found\n\timage.jpg\n\t\tFile not found\n5 files with 4 urls checked.\n"
+      output.should match("spec/fixtures/sample.html\n\tstyle.css\n\t\tFile not found")
+      output.should match("script.js\n\t\tFile not found")
+      output.should match("image.jpg\n\t\tFile not found")
+      output.should match("http://example.com\n\t\tHTTP 404")
+      output.should match("5 files with 4 urls checked and 4 errors found")
     end
   end
 end

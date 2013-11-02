@@ -14,6 +14,7 @@ class Utterson
   def check
     Dir.glob(File.join(@dir, '**/*.{html,htm}')) do |f|
       @stats[:files] += 1
+      puts "Checking #{f}"
       collect_uris_from(f).each do |u|
         @stats[:urls] += 1
         check_uri(u, f)
@@ -66,10 +67,15 @@ class Utterson
     @errors.each do |file, info|
       puts file
       info.each do |url, response|
-        puts "\t#{url}\n\t\t#{response}"
+        s = response.respond_to?(:code) ? "HTTP #{response.code}" : response
+        puts "\t#{url}\n\t\t#{s}"
       end
     end
-    puts "#{@stats[:files]} files with #{@stats[:urls]} urls checked."
+    if @stats[:errors] == 0
+      puts "#{@stats[:files]} files with #{@stats[:urls]} urls checked."
+    else
+      puts "#{@stats[:files]} files with #{@stats[:urls]} urls checked and #{@stats[:errors]} errors found."
+    end
   end
 
 end
