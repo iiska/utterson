@@ -122,6 +122,19 @@ describe Utterson do
       u.check_remote_uri("http://example.com/index.html", "test.html")
       u.errors.should_not be_empty
     end
+
+    it "shoud add error status from name resolution errors" do
+      stub_request(:head, "http://example.com/index.html").
+        to_raise(SocketError.new('getaddrinfo: Name or service not known'))
+      u.check_remote_uri("http://example.com/index.html", "test.html")
+      u.errors.should_not be_empty
+    end
+
+    it "shoud add error status when invalid URI" do
+      URI.stub(:new).and_raise(URI::InvalidURIError)
+      u.check_remote_uri("http://invalid_uri", "test.html")
+      u.errors.should_not be_empty
+    end
   end
 
   describe "#print_results" do

@@ -48,7 +48,11 @@ class Utterson
   end
 
   def check_remote_uri(url, file)
-    uri = URI(url.gsub(/^\/\//, 'http://'))
+    begin
+      uri = URI(url.gsub(/^\/\//, 'http://'))
+    rescue URI::InvalidURIError => e
+      return add_error(file, uri.to_s, e.message)
+    end
     begin
       response = Net::HTTP.start(uri.host, uri.port,
                                  :use_ssl => uri.scheme == 'https') do |http|
@@ -62,6 +66,8 @@ class Utterson
       add_error(file, uri.to_s, "Reading buffer timed out")
     rescue Errno::ETIMEDOUT
       add_error(file, uri.to_s, "Connection timed out")
+    rescue SocketError => e
+      add_error(file, uri.to_s, e.message)
     end
   end
 
