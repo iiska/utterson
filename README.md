@@ -1,5 +1,7 @@
 Simple utility to traverse directory of html files and check links in them.
 
+[![Build Status](https://travis-ci.org/iiska/utterson.png)](https://travis-ci.org/iiska/utterson)
+
 ## Why the name?
 
 I developed this to help me checking links in my Jekyll powered blog
