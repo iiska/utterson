@@ -110,6 +110,12 @@ describe Utterson do
       u.errors["test.html"].should_not be_empty
       u.errors["test.html"]["http://example.com/404.html"].instance_of?(Net::HTTPNotFound).should be_true
     end
+
+    it "should add error status from connection timeouts" do
+      stub_request(:head, "http://example.com/index.html").to_timeout
+      u.check_remote_uri("http://example.com/index.html", "test.html")
+      u.errors.should_not be_empty
+    end
   end
 
   describe "#print_results" do

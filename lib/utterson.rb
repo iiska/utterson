@@ -1,6 +1,7 @@
 require 'nokogiri'
 
 require 'net/http'
+require 'timeout'
 
 class Utterson
   attr_reader :errors
@@ -48,13 +49,17 @@ class Utterson
 
   def check_remote_uri(url, file)
     uri = URI(url.gsub(/^\/\//, 'http://'))
-    Net::HTTP.start(uri.host, uri.port,
-                    :use_ssl => uri.scheme == 'https') do |http|
-      p = uri.path.empty? ? "/" : uri.path
-      response = http.head(p)
+    begin
+      response = Net::HTTP.start(uri.host, uri.port,
+                                 :use_ssl => uri.scheme == 'https') do |http|
+        p = uri.path.empty? ? "/" : uri.path
+        http.head(p)
+      end
       if response.code =~ /^[^23]/
         add_error(file, uri.to_s, response)
       end
+    rescue Timeout::Error
+      add_error(file, uri.to_s, "Connection timeout")
     end
   end
 
