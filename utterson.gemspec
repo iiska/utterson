@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name        = 'utterson'
-  s.version     = '0.1.0'
+  s.version     = '0.1.1'
   s.summary     = "Friendly HTML crawler and url checker"
   s.description = "Traverses all HTML files from given directory and checks links found in them."
   s.authors     = ["Juhamatti Niemelä"]
