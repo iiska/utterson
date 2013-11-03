@@ -1,6 +1,6 @@
 Simple utility to traverse directory of html files and check links in them.
 
-[![Build Status](https://travis-ci.org/iiska/utterson.png)](https://travis-ci.org/iiska/utterson)
+[![Build Status](https://travis-ci.org/iiska/utterson.png)](https://travis-ci.org/iiska/utterson) [![Dependency Status](https://gemnasium.com/iiska/utterson.png)](https://gemnasium.com/iiska/utterson)
 
 ## Getting started
 
