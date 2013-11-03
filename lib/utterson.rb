@@ -59,7 +59,9 @@ class Utterson
         add_error(file, uri.to_s, response)
       end
     rescue Timeout::Error
-      add_error(file, uri.to_s, "Connection timeout")
+      add_error(file, uri.to_s, "Reading buffer timed out")
+    rescue Errno::ETIMEDOUT
+      add_error(file, uri.to_s, "Connection timed out")
     end
   end
 
