@@ -133,6 +133,12 @@ describe Utterson do
       u.errors.should_not be_empty
     end
 
+    it "should add error status from 'No route to host' errors" do
+      stub_request(:head, url).to_raise(Errno::EHOSTUNREACH)
+      u.check_remote_uri(url, html_file)
+      u.errors.should_not be_empty
+    end
+
     it "shoud add error status from name resolution errors" do
       stub_request(:head, url).
         to_raise(SocketError.new('getaddrinfo: Name or service not known'))

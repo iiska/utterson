@@ -66,6 +66,8 @@ class Utterson
       add_error(file, uri.to_s, "Reading buffer timed out")
     rescue Errno::ETIMEDOUT
       add_error(file, uri.to_s, "Connection timed out")
+    rescue Errno::EHOSTUNREACH
+      add_error(file, uri.to_s, "No route to host")
     rescue SocketError => e
       add_error(file, uri.to_s, e.message)
     end
