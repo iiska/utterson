@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-Gem::Specification.new do |s|
-  s.name        = 'utterson'
-  s.version     = '0.1.2'
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+require 'utterson/version'
+
+Gem::Specification.new 'utterson', Utterson::VERSION do |s|
   s.summary     = "Friendly HTML crawler and url checker"
   s.description = "Traverses all HTML files from given directory and checks links found in them."
   s.authors     = ["Juhamatti Niemelä"]

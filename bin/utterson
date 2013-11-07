@@ -9,4 +9,4 @@ opts = Trollop::options do
   opt :root, "Root directory for the site if it differs from target dir", type: :string
 end
 
-Utterson.new(opts.merge(dir: ARGV[0])).check
+Utterson::Base.new(opts.merge(dir: ARGV[0])).check
