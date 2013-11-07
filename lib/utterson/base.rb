@@ -1,4 +1,3 @@
-
 require 'utterson/html_check'
 
 module Utterson
@@ -14,15 +13,19 @@ module Utterson
     end
 
     def check
+      threads = []
       Dir.glob(File.join(@dir, '**/*.{html,htm}')) do |f|
         @stats[:files] += 1
+        puts "Checking file #{f}"
         c = HtmlCheck.new(file: f, root: @root)
         c.when_done do |r|
-          @stats[:urls] += r[:urls]
+          @stats[:urls] = r[:urls]
           @errors.merge! r[:errors]
+          puts "Check done with #{f}"
         end
-        c.run
+        threads << c.run
       end
+      threads.each {|t| t.join}
       print_results
     end
 
