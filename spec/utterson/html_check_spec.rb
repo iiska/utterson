@@ -2,13 +2,17 @@ require 'spec_helper'
 
 module Utterson
   describe HtmlCheck do
+    before(:each) do
+      HtmlCheck.class_variable_set(:@@checked_urls, {})
+    end
+
     let(:sample_file) {"spec/fixtures/sample.html"}
 
     it "should check all urls which are found" do
       h = HtmlCheck.new(dir: "spec/fixtures", file: "spec/fixtures/sample.html")
       h.stub(:check_uri) {}
       h.should_receive(:check_uri).exactly(4).times
-      h.run
+      h.run.join
     end
 
     it "should find all uris from sample document" do
@@ -23,6 +27,14 @@ module Utterson
     describe "#check_uri" do
       let(:h) {HtmlCheck.new}
       let(:html_file) {"file.html"}
+
+      it "should check same url only once" do
+        url = "http://example.com"
+        h.stub(:check_remote_uri) {}
+        h.should_receive(:check_remote_uri).once.with(url, html_file)
+        h.check_uri(url, html_file)
+        h.check_uri(url, html_file)
+      end
 
       it "should use remote checking for http protocol" do
         url = "http://example.com"

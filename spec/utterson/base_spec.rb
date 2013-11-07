@@ -5,7 +5,7 @@ module Utterson
     it "should go through all htm and html files in target dir" do
       dir = "spec/fixtures/dir-structure"
       u = Base.new(dir: dir)
-      HtmlCheck.stub(:new) {double(when_done: {}, run: {})}
+      HtmlCheck.stub(:new) {double(when_done: {}, run: double(join: {}))}
 
       ["spec/fixtures/dir-structure/1.htm",
        "spec/fixtures/dir-structure/2.html",

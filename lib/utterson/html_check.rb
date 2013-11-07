@@ -2,16 +2,19 @@ require 'nokogiri'
 
 require 'net/http'
 require 'timeout'
+require 'thread'
 
 module Utterson
   class HtmlCheck
     attr_reader :errors
 
+    @@semaphore = Mutex.new
+    @@checked_urls = {}
+
     def initialize(opts={})
       @file = opts[:file]
       @root = opts[:root]
       @errors = {}
-      @checked_urls = {}
     end
 
     def when_done(&handler)
@@ -19,14 +22,15 @@ module Utterson
     end
 
     def run
-      collect_uris_from(@file).each do |u|
-        check_uri(u, @file)
-      end
-      unless @result_handler.nil?
-        @result_handler.call({
-          errors: @errors,
-          urls: @checked_urls.count
-        })
+      Thread.new do
+        collect_uris_from(@file).each do |u|
+          check_uri(u, @file)
+        end
+        unless @result_handler.nil?
+          @@semaphore.synchronize do
+            @result_handler.call(errors: @errors, urls: @@checked_urls.count)
+          end
+        end
       end
     end
 
@@ -41,14 +45,19 @@ module Utterson
     end
 
     def check_uri(url, file)
-      return if @checked_urls[url]
+      @@semaphore.synchronize do
+        if @@checked_urls[url]
+          return
+        else
+          @@checked_urls[url] = true
+        end
+      end
 
       if url =~ /^(https?:)?\/\//
         check_remote_uri url, file
       else
         check_local_uri url, file
       end
-      @checked_urls[url] = true
     end
 
     def check_remote_uri(url, file)
@@ -66,13 +75,7 @@ module Utterson
         if response.code =~ /^[^23]/
           add_error(file, uri.to_s, response)
         end
-      rescue Timeout::Error
-        add_error(file, uri.to_s, "Reading buffer timed out")
-      rescue Errno::ETIMEDOUT
-        add_error(file, uri.to_s, "Connection timed out")
-      rescue Errno::EHOSTUNREACH
-        add_error(file, uri.to_s, "No route to host")
-      rescue SocketError => e
+      rescue => e
         add_error(file, uri.to_s, e.message)
       end
     end
