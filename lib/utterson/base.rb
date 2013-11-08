@@ -1,3 +1,5 @@
+require 'ruby-progressbar'
+
 require 'utterson/html_check'
 
 module Utterson
@@ -13,15 +15,16 @@ module Utterson
     end
 
     def check
+      bar = ProgressBar.create
       threads = []
       Dir.glob(File.join(@dir, '**/*.{html,htm}')) do |f|
         @stats[:files] += 1
-        puts "Checking file #{f}"
+        bar.total = @stats[:files]
         c = HtmlCheck.new(file: f, root: @root)
         c.when_done do |r|
+          bar.increment
           @stats[:urls] = r[:urls]
           @errors.merge! r[:errors]
-          puts "Check done with #{f}"
         end
         threads << c.run
       end

@@ -17,8 +17,9 @@ Gem::Specification.new 'utterson', Utterson::VERSION do |s|
   s.test_files = Dir['spec/**/*']
 
   s.required_ruby_version = ">= 1.9.3"
-  s.add_runtime_dependency 'trollop'
-  s.add_runtime_dependency 'nokogiri'
+  s.add_runtime_dependency 'trollop', '~> 2.0'
+  s.add_runtime_dependency 'nokogiri', '~> 1.6.0'
+  s.add_runtime_dependency 'ruby-progressbar', '~> 1.2.0'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
