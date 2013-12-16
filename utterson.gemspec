@@ -19,10 +19,10 @@ Gem::Specification.new 'utterson', Utterson::VERSION do |s|
   s.required_ruby_version = ">= 1.9.3"
   s.add_runtime_dependency 'trollop', '~> 2.0'
   s.add_runtime_dependency 'nokogiri', '~> 1.6.0'
-  s.add_runtime_dependency 'ruby-progressbar', '~> 1.2.0'
+  s.add_runtime_dependency 'ruby-progressbar', '~> 1.3.0'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'webmock', '~> 1.15.2'
+  s.add_development_dependency 'webmock', '~> 1.16.0'
 end
