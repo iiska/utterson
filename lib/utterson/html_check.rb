@@ -5,6 +5,8 @@ require 'timeout'
 require 'thread'
 
 module Utterson
+  # Handle collecting URIs from HTML documents and both remote and
+  # local checking of them.
   class HtmlCheck
     attr_reader :errors
 
@@ -61,23 +63,18 @@ module Utterson
     end
 
     def check_remote_uri(url, file)
-      begin
-        uri = URI(url.gsub(/^\/\//, 'http://'))
-      rescue URI::InvalidURIError => e
-        return add_error(file, uri.to_s, e.message)
+      uri = URI(url.gsub(/^\/\//, 'http://'))
+
+      response = Net::HTTP.start(uri.host, uri.port,
+                                 :use_ssl => uri.scheme == 'https') do |http|
+        http.head uri.path.empty? ? "/" : uri.path
       end
-      begin
-        response = Net::HTTP.start(uri.host, uri.port,
-                                   :use_ssl => uri.scheme == 'https') do |http|
-          p = uri.path.empty? ? "/" : uri.path
-          http.head(p)
-        end
-        if response.code =~ /^[^23]/
-          add_error(file, uri.to_s, response)
-        end
-      rescue => e
-        add_error(file, uri.to_s, e.message)
+      if response.code =~ /^[^23]/
+        add_error(file, uri.to_s, response)
       end
+
+    rescue => e
+      add_error(file, uri.to_s, e.message)
     end
 
     def check_local_uri(url, file)

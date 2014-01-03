@@ -87,7 +87,7 @@ module Utterson
         h2.errors.should be_empty
       end
 
-      it "should handle target directory as root for urls starting with / if root is no available" do
+      it "uses target directory as root if undefined when url starts with /" do
         h.check_local_uri("/2.html", html_file)
         h.errors.should be_empty
       end

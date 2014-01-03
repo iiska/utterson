@@ -34,7 +34,8 @@ module Utterson
         output = capture_stdout do
           u.check
         end
-        output.should match("spec/fixtures/sample.html\n\tstyle.css\n\t\tFile not found")
+        output.should match("spec/fixtures/sample.html\n\tstyle.css\n"+
+                            "\t\tFile not found")
         output.should match("script.js\n\t\tFile not found")
         output.should match("image.jpg\n\t\tFile not found")
         output.should match("http://example.com\n\t\tHTTP 404")

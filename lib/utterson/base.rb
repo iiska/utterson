@@ -3,6 +3,8 @@ require 'ruby-progressbar'
 require 'utterson/html_check'
 
 module Utterson
+  # Base implements initialization of the checking process and handles
+  # outputting final results.
   class Base
     attr_reader :errors
 
@@ -45,7 +47,8 @@ module Utterson
       if count == 0
         puts "#{@stats[:files]} files with #{@stats[:urls]} urls checked."
       else
-        puts "#{@stats[:files]} files with #{@stats[:urls]} urls checked and #{count} errors found."
+        puts "Q{#{@stats[:files]} files with #{@stats[:urls]} urls checked "+
+          "and #{count} errors found."
       end
     end
   end
