@@ -24,5 +24,5 @@ Gem::Specification.new 'utterson', Utterson::VERSION do |s|
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'webmock', '~> 1.16.0'
+  s.add_development_dependency 'webmock', '~> 1.17.0'
 end
