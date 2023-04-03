@@ -10,18 +10,15 @@ module Utterson
 
     it "checks all urls which are found" do
       h = described_class.new(dir: "spec/fixtures", file: "spec/fixtures/sample.html")
-      h.stub(:check_uri) {}
-      h.should_receive(:check_uri).exactly(4).times
+      allow(h).to receive(:check_uri)
       h.run.join
+      expect(h).to have_received(:check_uri).exactly(4).times
     end
 
     it "finds all uris from sample document" do
       h = described_class.new(file: sample_file)
       uris = h.collect_uris_from(sample_file)
-      expect(uris).to include("script.js")
-      expect(uris).to include("style.css")
-      expect(uris).to include("http://example.com")
-      expect(uris).to include("image.jpg")
+      expect(uris).to include("script.js", "style.css", "http://example.com", "image.jpg")
     end
 
     describe "#check_uri" do
@@ -30,38 +27,38 @@ module Utterson
 
       it "checks same url only once" do
         url = "http://example.com"
-        h.stub(:check_remote_uri) {}
-        h.should_receive(:check_remote_uri).once.with(url, html_file)
+        allow(h).to receive(:check_remote_uri)
         h.check_uri(url, html_file)
         h.check_uri(url, html_file)
+        expect(h).to have_received(:check_remote_uri).once.with(url, html_file)
       end
 
       it "uses remote checking for http protocol" do
         url = "http://example.com"
-        h.stub(:check_remote_uri) {}
-        h.should_receive(:check_remote_uri).with(url, html_file)
+        allow(h).to receive(:check_remote_uri)
         h.check_uri(url, html_file)
+        expect(h).to have_received(:check_remote_uri).with(url, html_file)
       end
 
       it "uses remote checking for https protocol" do
         url = "https://example.com"
-        h.stub(:check_remote_uri) {}
-        h.should_receive(:check_remote_uri).with(url, html_file)
+        allow(h).to receive(:check_remote_uri)
         h.check_uri(url, html_file)
+        expect(h).to have_received(:check_remote_uri).with(url, html_file)
       end
 
       it "uses remote checking when only // is specified" do
         url = "//example.com"
-        h.stub(:check_remote_uri) {}
-        h.should_receive(:check_remote_uri).with(url, html_file)
+        allow(h).to receive(:check_remote_uri)
         h.check_uri(url, html_file)
+        expect(h).to have_received(:check_remote_uri).with(url, html_file)
       end
 
       it "uses local checking for relative uris" do
         url = "../file.html"
-        h.stub(:check_local_uri) {}
-        h.should_receive(:check_local_uri).with(url, html_file)
+        allow(h).to receive(:check_local_uri)
         h.check_uri(url, html_file)
+        expect(h).to have_received(:check_local_uri).with(url, html_file)
       end
     end
 
@@ -116,7 +113,6 @@ module Utterson
           .with(headers: {"Accept" => "*/*", "User-Agent" => "Ruby"})
           .to_return(status: 404, body: "", headers: {})
         h.check_remote_uri(url, html_file)
-        expect(h.errors[html_file]).not_to be_empty
         expect(h.errors[html_file][url]).to be_an_instance_of(Net::HTTPNotFound)
       end
 

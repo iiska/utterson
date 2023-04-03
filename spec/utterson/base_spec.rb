@@ -5,16 +5,15 @@ module Utterson
     it "goes through all htm and html files in target dir" do
       dir = "spec/fixtures/dir-structure"
       u = described_class.new(dir: dir)
-      HtmlCheck.stub(:new) { double(when_done: {}, run: double(join: {})) }
+      allow(HtmlCheck).to receive(:new) { instance_double(HtmlCheck, when_done: {}, run: instance_double(Thread, join: {})) }
 
+      u.check
       ["spec/fixtures/dir-structure/1.htm",
         "spec/fixtures/dir-structure/2.html",
         "spec/fixtures/dir-structure/a/3.htm",
         "spec/fixtures/dir-structure/a/b/4.html"].each do |file|
-        expect(HtmlCheck).to receive(:new).with(file: file, root: dir)
+        expect(HtmlCheck).to have_received(:new).with(file: file, root: dir)
       end
-
-      u.check
     end
 
     describe "#print_results" do
@@ -34,12 +33,14 @@ module Utterson
         output = capture_stdout do
           u.check
         end
-        expect(output).to match("spec/fixtures/sample.html\n\tstyle.css\n" \
-                            "\t\tFile not found")
-        expect(output).to match("script.js\n\t\tFile not found")
-        expect(output).to match("image.jpg\n\t\tFile not found")
-        expect(output).to match("http://example.com\n\t\tHTTP 404")
-        expect(output).to match("5 files with 4 urls checked and 4 errors found")
+        expect(output).to include(
+          "spec/fixtures/sample.html\n\tstyle.css\n" \
+      "\t\tFile not found",
+          "script.js\n\t\tFile not found",
+          "image.jpg\n\t\tFile not found",
+          "http://example.com\n\t\tHTTP 404",
+          "5 files with 4 urls checked and 4 errors found"
+        )
       end
     end
   end

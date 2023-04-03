@@ -15,5 +15,10 @@ inherit_gem:
 inherit_from:
   - .rubocop_strict.yml
 
+RSpec/ExampleLength:
+  Exclude:
+    - "spec/utterson/base_spec.rb"
+
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 3.2
