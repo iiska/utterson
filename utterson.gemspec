@@ -16,13 +16,14 @@ Gem::Specification.new 'utterson', Utterson::VERSION do |s|
 
   s.test_files = Dir['spec/**/*']
 
-  s.required_ruby_version = ">= 1.9.3"
-  s.add_runtime_dependency 'trollop', '~> 2.0'
-  s.add_runtime_dependency 'nokogiri', '~> 1.6.0'
-  s.add_runtime_dependency 'ruby-progressbar', '~> 1.4.0'
+  s.required_ruby_version = '>= 2.7.0'
+  s.add_runtime_dependency 'optimist', '~> 3.0'
+  s.add_runtime_dependency 'nokogiri', '~> 1.14.0'
+  s.add_runtime_dependency 'ruby-progressbar', '~> 1.13.0'
 
+  s.add_development_dependency 'bundler', '>= 1.12'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'webmock', '~> 1.17.0'
+  s.add_development_dependency 'webmock', '~> 3.18.0'
 end

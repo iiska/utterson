@@ -1,7 +1,8 @@
 Simple utility to traverse directory of html files and check links in them.
 
 [![Gem Version](https://badge.fury.io/rb/utterson.png)](http://badge.fury.io/rb/utterson)
-[![Build Status](https://travis-ci.org/iiska/utterson.png)](https://travis-ci.org/iiska/utterson) [![Dependency Status](https://gemnasium.com/iiska/utterson.png)](https://gemnasium.com/iiska/utterson)
+[![Tests](https://github.com/iiska/utterson/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/iiska/utterson/actions/workflows/ci.yml)
+
 
 ## Getting started
 

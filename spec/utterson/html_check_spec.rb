@@ -18,10 +18,10 @@ module Utterson
     it "should find all uris from sample document" do
       h = HtmlCheck.new(file: sample_file)
       uris = h.collect_uris_from(sample_file)
-      uris.should include("script.js")
-      uris.should include("style.css")
-      uris.should include("http://example.com")
-      uris.should include("image.jpg")
+      expect(uris).to include("script.js")
+      expect(uris).to include("style.css")
+      expect(uris).to include("http://example.com")
+      expect(uris).to include("image.jpg")
     end
 
     describe "#check_uri" do
@@ -65,36 +65,36 @@ module Utterson
       end
     end
 
-    describe "#check_local_uri" do
+    describe "#check_relative_uri" do
       let(:h) {HtmlCheck.new(root: "spec/fixtures/dir-structure")}
       let(:html_file) {"spec/fixtures/dir-structure/1.htm"}
 
       it "should not assign error info if file exists" do
         h.check_local_uri("../sample.html", html_file)
-        h.errors.should be_empty
+        expect(h.errors).to be_empty
       end
 
       it "should assign error info if file doesn't exist" do
         url = "../sample_not_found.html"
         h.check_local_uri(url, html_file)
-        h.errors[html_file].should == {url => "File not found"}
+        expect(h.errors[html_file]).to eq({url => "File not found"})
       end
 
       it "should use root directory when urls start with /" do
         h2 = HtmlCheck.new(file: html_file,
                            root: "spec/fixtures")
         h2.check_local_uri("/sample.html", html_file)
-        h2.errors.should be_empty
+        expect(h2.errors).to be_empty
       end
 
       it "uses target directory as root if undefined when url starts with /" do
         h.check_local_uri("/2.html", html_file)
-        h.errors.should be_empty
+        expect(h.errors).to be_empty
       end
 
       it "should ignore query string when checking local files" do
         h.check_local_uri("2.html?queryparam=value", html_file)
-        h.errors.should be_empty
+        expect(h.errors).to be_empty
       end
     end
 
@@ -108,7 +108,7 @@ module Utterson
           with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
           to_return(:status => 200, :body => "", :headers => {})
         h.check_remote_uri(url, html_file)
-        h.errors.should be_empty
+        expect(h.errors).to be_empty
       end
 
       it "should assign error info if there is error response" do
@@ -116,40 +116,38 @@ module Utterson
           with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'}).
           to_return(:status => 404, :body => "", :headers => {})
         h.check_remote_uri(url, html_file)
-        puts h.errors.inspect
-        h.errors[html_file].should_not be_empty
-        h.errors[html_file][url].instance_of?(Net::HTTPNotFound).should be_true
+        expect(h.errors[html_file]).not_to be_empty
+        expect(h.errors[html_file][url].instance_of?(Net::HTTPNotFound)).to be_truthy
       end
 
       it "should add error status from buffer timeouts" do
         stub_request(:head, url).to_timeout
         h.check_remote_uri(url, html_file)
-        h.errors.should_not be_empty
+        expect(h.errors).not_to be_empty
       end
 
       it "should add error status from connection timeouts" do
         stub_request(:head, url).to_raise(Errno::ETIMEDOUT)
         h.check_remote_uri(url, html_file)
-        h.errors.should_not be_empty
+        expect(h.errors).not_to be_empty
       end
 
       it "should add error status from 'No route to host' errors" do
         stub_request(:head, url).to_raise(Errno::EHOSTUNREACH)
         h.check_remote_uri(url, html_file)
-        h.errors.should_not be_empty
+        expect(h.errors).not_to be_empty
       end
 
       it "shoud add error status from name resolution errors" do
         stub_request(:head, url).
           to_raise(SocketError.new('getaddrinfo: Name or service not known'))
         h.check_remote_uri(url, html_file)
-        h.errors.should_not be_empty
+        expect(h.errors).not_to be_empty
       end
 
       it "shoud add error status when invalid URI" do
-        URI.stub(:new).and_raise(URI::InvalidURIError)
-        h.check_remote_uri("http://invalid_uri", html_file)
-        h.errors.should_not be_empty
+        h.check_remote_uri(":", html_file)
+        expect(h.errors).not_to be_empty
       end
     end
   end

@@ -2,10 +2,10 @@
 
 $:.unshift File.join(File.dirname(__FILE__), *%w{ .. lib })
 
-require 'trollop'
+require 'optimist'
 require 'utterson'
 
-opts = Trollop::options do
+opts = Optimist::options do
   opt :root, "Root directory for the site if it differs from target dir", type: :string
 end
 

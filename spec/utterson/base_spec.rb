@@ -11,7 +11,7 @@ module Utterson
        "spec/fixtures/dir-structure/2.html",
        "spec/fixtures/dir-structure/a/3.htm",
        "spec/fixtures/dir-structure/a/b/4.html"].each do |file|
-        HtmlCheck.should_receive(:new).with(file: file, root: dir)
+        expect(HtmlCheck).to receive(:new).with(file: file, root: dir)
       end
 
       u.check
@@ -23,7 +23,7 @@ module Utterson
         output = capture_stdout do
           u.check
         end
-        output.should match(/4 files with 0 urls checked/)
+        expect(output).to match(/4 files with 0 urls checked/)
       end
 
       it "should output error information" do
@@ -34,12 +34,12 @@ module Utterson
         output = capture_stdout do
           u.check
         end
-        output.should match("spec/fixtures/sample.html\n\tstyle.css\n"+
+        expect(output).to match("spec/fixtures/sample.html\n\tstyle.css\n"+
                             "\t\tFile not found")
-        output.should match("script.js\n\t\tFile not found")
-        output.should match("image.jpg\n\t\tFile not found")
-        output.should match("http://example.com\n\t\tHTTP 404")
-        output.should match("5 files with 4 urls checked and 4 errors found")
+        expect(output).to match("script.js\n\t\tFile not found")
+        expect(output).to match("image.jpg\n\t\tFile not found")
+        expect(output).to match("http://example.com\n\t\tHTTP 404")
+        expect(output).to match("5 files with 4 urls checked and 4 errors found")
       end
     end
   end
