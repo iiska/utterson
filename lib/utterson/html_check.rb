@@ -84,7 +84,7 @@ module Utterson
       else
         path = File.expand_path(url, File.dirname(file))
       end
-      add_error(file, url, "File not found") unless File.exists? path
+      add_error(file, url, "File not found") unless File.exist? path
     end
 
     def add_error(file, url, response)
