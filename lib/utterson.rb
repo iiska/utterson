@@ -1,2 +1,2 @@
-require 'utterson/base'
-require 'utterson/version'
+require "utterson/base"
+require "utterson/version"

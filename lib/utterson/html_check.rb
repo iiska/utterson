@@ -1,8 +1,7 @@
-require 'nokogiri'
+require "nokogiri"
 
-require 'net/http'
-require 'timeout'
-require 'thread'
+require "net/http"
+require "timeout"
 
 module Utterson
   # Handle collecting URIs from HTML documents and both remote and
@@ -13,7 +12,7 @@ module Utterson
     @@semaphore = Mutex.new
     @@checked_urls = {}
 
-    def initialize(opts={})
+    def initialize(opts = {})
       @file = opts[:file]
       @root = opts[:root]
       @errors = {}
@@ -40,8 +39,8 @@ module Utterson
       ret = []
       doc = Nokogiri::HTML(File.read(f))
       doc.traverse do |el|
-        ret << el['src'] unless el['src'].nil?
-        ret << el['href'] unless el['href'].nil?
+        ret << el["src"] unless el["src"].nil?
+        ret << el["href"] unless el["href"].nil?
       end
       ret
     end
@@ -55,7 +54,7 @@ module Utterson
         end
       end
 
-      if url =~ /^(https?:)?\/\//
+      if /^(https?:)?\/\//.match?(url)
         check_remote_uri url, file
       else
         check_local_uri url, file
@@ -63,26 +62,25 @@ module Utterson
     end
 
     def check_remote_uri(url, file)
-      uri = URI(url.gsub(/^\/\//, 'http://'))
+      uri = URI(url.gsub(/^\/\//, "http://"))
 
       response = Net::HTTP.start(uri.host, uri.port,
-                                 :use_ssl => uri.scheme == 'https') do |http|
+        use_ssl: uri.scheme == "https") do |http|
         http.head uri.path.empty? ? "/" : uri.path
       end
-      if response.code =~ /^[^23]/
+      if /^[^23]/.match?(response.code)
         add_error(file, uri.to_s, response)
       end
-
     rescue => e
       add_error(file, uri.to_s, e.message)
     end
 
     def check_local_uri(url, file)
-      url.gsub!(/\?.*$/, '')
-      if url =~ /^\//
-        path = File.expand_path(".#{url}", @root)
+      url.gsub!(/\?.*$/, "")
+      path = if /^\//.match?(url)
+        File.expand_path(".#{url}", @root)
       else
-        path = File.expand_path(url, File.dirname(file))
+        File.expand_path(url, File.dirname(file))
       end
       add_error(file, url, "File not found") unless File.exist? path
     end

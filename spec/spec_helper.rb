@@ -1,14 +1,14 @@
-#require 'rubygems'
+# require 'rubygems'
 
-require 'webmock/rspec'
+require "webmock/rspec"
 
-require 'simplecov'
+require "simplecov"
 SimpleCov.formatter = SimpleCov::Formatter::HTMLFormatter
 SimpleCov.start
 
-require 'utterson'
+require "utterson"
 
-require 'stringio'
+require "stringio"
 
 def capture_stdout &block
   old_stdout = $stdout

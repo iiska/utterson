@@ -1,11 +1,11 @@
 #! /bin/env ruby
 
-$:.unshift File.join(File.dirname(__FILE__), *%w{ .. lib })
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
-require 'optimist'
-require 'utterson'
+require "optimist"
+require "utterson"
 
-opts = Optimist::options do
+opts = Optimist.options do
   opt :root, "Root directory for the site if it differs from target dir", type: :string
 end
 

@@ -1,6 +1,6 @@
-require 'ruby-progressbar'
+require "ruby-progressbar"
 
-require 'utterson/html_check'
+require "utterson/html_check"
 
 module Utterson
   # Base implements initialization of the checking process and handles
@@ -8,8 +8,8 @@ module Utterson
   class Base
     attr_reader :errors
 
-    def initialize(opts={})
-      @dir = opts[:dir] || './'
+    def initialize(opts = {})
+      @dir = opts[:dir] || "./"
       @root = opts[:root] || @dir
       @errors = {}
       @checked_urls = {}
@@ -19,7 +19,7 @@ module Utterson
     def check
       bar = ProgressBar.create
       threads = []
-      Dir.glob(File.join(@dir, '**/*.{html,htm}')) do |f|
+      Dir.glob(File.join(@dir, "**/*.{html,htm}")) do |f|
         @stats[:files] += 1
         bar.total = @stats[:files]
         c = HtmlCheck.new(file: f, root: @root)
@@ -30,7 +30,7 @@ module Utterson
         end
         threads << c.run
       end
-      threads.each {|t| t.join}
+      threads.each { |t| t.join }
       print_results
     end
 
@@ -47,7 +47,7 @@ module Utterson
       if count == 0
         puts "#{@stats[:files]} files with #{@stats[:urls]} urls checked."
       else
-        puts "Q{#{@stats[:files]} files with #{@stats[:urls]} urls checked "+
+        puts "Q{#{@stats[:files]} files with #{@stats[:urls]} urls checked " +
           "and #{count} errors found."
       end
     end
