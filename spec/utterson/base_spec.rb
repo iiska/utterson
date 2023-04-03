@@ -4,7 +4,7 @@ module Utterson
   describe Base do
     it "goes through all htm and html files in target dir" do
       dir = "spec/fixtures/dir-structure"
-      u = Base.new(dir: dir)
+      u = described_class.new(dir: dir)
       HtmlCheck.stub(:new) { double(when_done: {}, run: double(join: {})) }
 
       ["spec/fixtures/dir-structure/1.htm",
@@ -19,7 +19,7 @@ module Utterson
 
     describe "#print_results" do
       it "outputs only basic stats if no errors" do
-        u = Base.new(dir: "spec/fixtures/dir-structure")
+        u = described_class.new(dir: "spec/fixtures/dir-structure")
         output = capture_stdout do
           u.check
         end
@@ -30,11 +30,11 @@ module Utterson
         stub_request(:head, "http://example.com/")
           .with(headers: {"Accept" => "*/*", "User-Agent" => "Ruby"})
           .to_return(status: 404, body: "", headers: {})
-        u = Base.new(dir: "spec/fixtures")
+        u = described_class.new(dir: "spec/fixtures")
         output = capture_stdout do
           u.check
         end
-        expect(output).to match("spec/fixtures/sample.html\n\tstyle.css\n" +
+        expect(output).to match("spec/fixtures/sample.html\n\tstyle.css\n" \
                             "\t\tFile not found")
         expect(output).to match("script.js\n\t\tFile not found")
         expect(output).to match("image.jpg\n\t\tFile not found")

@@ -3,20 +3,20 @@ require "spec_helper"
 module Utterson
   describe HtmlCheck do
     before do
-      HtmlCheck.class_variable_set(:@@checked_urls, {})
+      described_class.class_variable_set(:@@checked_urls, {})
     end
 
     let(:sample_file) { "spec/fixtures/sample.html" }
 
     it "checks all urls which are found" do
-      h = HtmlCheck.new(dir: "spec/fixtures", file: "spec/fixtures/sample.html")
+      h = described_class.new(dir: "spec/fixtures", file: "spec/fixtures/sample.html")
       h.stub(:check_uri) {}
       h.should_receive(:check_uri).exactly(4).times
       h.run.join
     end
 
     it "finds all uris from sample document" do
-      h = HtmlCheck.new(file: sample_file)
+      h = described_class.new(file: sample_file)
       uris = h.collect_uris_from(sample_file)
       expect(uris).to include("script.js")
       expect(uris).to include("style.css")
@@ -25,7 +25,7 @@ module Utterson
     end
 
     describe "#check_uri" do
-      let(:h) { HtmlCheck.new }
+      let(:h) { described_class.new }
       let(:html_file) { "file.html" }
 
       it "checks same url only once" do
@@ -66,7 +66,7 @@ module Utterson
     end
 
     describe "#check_relative_uri" do
-      let(:h) { HtmlCheck.new(root: "spec/fixtures/dir-structure") }
+      let(:h) { described_class.new(root: "spec/fixtures/dir-structure") }
       let(:html_file) { "spec/fixtures/dir-structure/1.htm" }
 
       it "does not assign error info if file exists" do
@@ -81,7 +81,7 @@ module Utterson
       end
 
       it "uses root directory when urls start with /" do
-        h2 = HtmlCheck.new(file: html_file,
+        h2 = described_class.new(file: html_file,
           root: "spec/fixtures")
         h2.check_local_uri("/sample.html", html_file)
         expect(h2.errors).to be_empty
@@ -99,7 +99,7 @@ module Utterson
     end
 
     describe "#check_remote_uri" do
-      let(:h) { HtmlCheck.new(file: "test.html") }
+      let(:h) { described_class.new(file: "test.html") }
       let(:html_file) { "test.html" }
       let(:url) { "http://example.com/index.html" }
 
@@ -117,7 +117,7 @@ module Utterson
           .to_return(status: 404, body: "", headers: {})
         h.check_remote_uri(url, html_file)
         expect(h.errors[html_file]).not_to be_empty
-        expect(h.errors[html_file][url].instance_of?(Net::HTTPNotFound)).to be_truthy
+        expect(h.errors[html_file][url]).to be_an_instance_of(Net::HTTPNotFound)
       end
 
       it "adds error status from buffer timeouts" do

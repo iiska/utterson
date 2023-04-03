@@ -47,7 +47,7 @@ module Utterson
       if count == 0
         puts "#{@stats[:files]} files with #{@stats[:urls]} urls checked."
       else
-        puts "Q{#{@stats[:files]} files with #{@stats[:urls]} urls checked " +
+        puts "Q{#{@stats[:files]} files with #{@stats[:urls]} urls checked " \
           "and #{count} errors found."
       end
     end
